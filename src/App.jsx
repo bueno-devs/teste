@@ -1,34 +1,58 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Header from './components/Header'
+import TaskList from './components/TaskList'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [input, setInput] = useState('')
+  const [tasks, setTasks] = useState([{ title: 'jogar', status: true }])
+
+  const handleSubmit = event => {
+    event.preventDefault()
+    const newTasks = [...tasks]
+    newTasks.push({ title: input, status: false })
+    setTasks(newTasks)
+    setInput('')
+  }
+
+  const handleChange = event => {
+    setInput(event.target.value)
+  }
+
+  const handleTaskChange = task => {
+    const index = tasks.findIndex(item => item.title === task.title)
+    const newTasks = [...tasks].toSpliced(index, 1)
+    newTasks.push(task)
+    setTasks(newTasks)
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React - feito por Bueno-Devs</h1>
-      <div className="card">
-        <button onClick={() => setCount(count => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <main className="container">
+      <article>
+        <Header />
+        <form role="group" onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="tarefa"
+            id="tarefa"
+            value={input}
+            onChange={handleChange}
+          />
+          <button type="submit">+</button>
+        </form>
+        <section>
+          <TaskList
+            handleTaskChange={handleTaskChange}
+            tasks={tasks.filter(task => task.status === false)}
+          />
+        </section>
+        <footer>
+          <TaskList
+            handleTaskChange={handleTaskChange}
+            tasks={tasks.filter(task => task.status === true)}
+          />
+        </footer>
+      </article>
+    </main>
   )
 }
 
