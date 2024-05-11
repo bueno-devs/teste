@@ -1,16 +1,18 @@
 import { useState } from 'react'
 import Header from './components/Header'
 import TaskList from './components/TaskList'
+import { saveTasks, getTasks } from './utils/storage'
 
 function App() {
   const [input, setInput] = useState('')
-  const [tasks, setTasks] = useState([{ title: 'jogar', status: true }])
+  const [tasks, setTasks] = useState(getTasks())
 
   const handleSubmit = event => {
     event.preventDefault()
     const newTasks = [...tasks]
     newTasks.push({ title: input, status: false })
     setTasks(newTasks)
+    saveTasks(newTasks)
     setInput('')
   }
 
@@ -23,6 +25,7 @@ function App() {
     const newTasks = [...tasks].toSpliced(index, 1)
     newTasks.push(task)
     setTasks(newTasks)
+    saveTasks(newTasks)
   }
 
   return (
